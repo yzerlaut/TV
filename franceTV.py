@@ -18,12 +18,11 @@ def extract_infos(link, debug=False):
     links = []
     for Link in soup.findAll('a'):
         l = Link.get('href')
-        print(l)
         if debug:
             print(l)
         if (title in l) and ('.html' in l):
-            if 'francetv' not in l:
-                l = 'https://www.francetv.fr'+l
+            if ('france.tv' not in l):
+                l = 'https://www.france.tv'+l
             if debug:
                 print('   -> selecting:', l)
             links.append(l)
@@ -36,9 +35,10 @@ def extract_infos(link, debug=False):
 
 if __name__=='__main__':
     
-    link = sys.argv[-1]
+    link = sys.argv[1]
 
-    title, links = extract_infos(link)
+    title, links = extract_infos(link,
+                                 debug=('debug' in sys.argv[-1]))
 
     with open('list.txt', 'w') as f:
         for l in links:
