@@ -5,8 +5,8 @@ from bs4 import BeautifulSoup
 
 def extract_infos(link, debug=False):
 
-    title = link.split('/')[-2]
-    # print(title)
+    titles = link.split('/')[-3:-1]
+    print(titles)
     root_site = link[:31]
     # print(root_site)
 
@@ -20,12 +20,18 @@ def extract_infos(link, debug=False):
         l = Link.get('href')
         if debug:
             print(l)
-        if (title in l) and ('.html' in l):
+        if ((titles[0] in l) or (titles[1] in l)) and ('.html' in l):
             if ('france.tv' not in l):
                 l = 'https://www.france.tv'+l
             if debug:
                 print('   -> selecting:', l)
             links.append(l)
+
+        if (titles[0] in l):
+            title = titles[0]
+        else:
+            title = titles[1]
+
 
     return title, links
     
