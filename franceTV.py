@@ -68,7 +68,7 @@ if __name__=='__main__':
 
     else:
 
-        title, Links = extract_infos(link+'/?page=%i' % i,
+        title, Links = extract_infos(link,
                                      debug=('debug' in sys.argv[-1]))
         
     
