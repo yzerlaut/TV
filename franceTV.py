@@ -11,7 +11,9 @@ iterate over all pages of a given video with:
 
 """
 
-def extract_infos(link, debug=False):
+def extract_infos(link, 
+                  force_string='',
+                  debug=False):
 
     titles = link.split('/')[-3:-1]
     if debug:
@@ -36,7 +38,8 @@ def extract_infos(link, debug=False):
                 l = 'https://www.france.tv'+l
             if debug:
                 print('   -> selecting:', l)
-            links.append(l)
+            if force_string in l:
+                links.append(l)
 
         if (titles[0] in l):
             title = titles[0]
@@ -57,17 +60,33 @@ def find_season_episodes(url):
 
 if __name__=='__main__':
     
-    """
-    python franceTV.py URL pages to loop over the different pages
-    """
+
+    import argparse
+    parser=argparse.ArgumentParser(description= """
+        python franceTV.py URL --pages # to loop over the different pages
+    """,
+                                   formatter_class=argparse.RawTextHelpFormatter)
+
+    parser.add_argument("url")
+    
+    parser.add_argument('-s', "--string", 
+                        help="force a string to be present in the downloaded urls",
+                        type=str, default='')
+    parser.add_argument("-p", "--pages", help="loop over pages",
+                        action="store_true")
+    parser.add_argument("-n", "--nPages", type=int, default=10)
+    parser.add_argument("-d", "--debug",  action="store_true")
+    args = parser.parse_args()
+
     link = sys.argv[1]
 
-    if 'pages' in sys.argv:
+    if args.pages:
         # iterate over multiple pages
         Links = []
-        for i in range(10):
-            title, links = extract_infos(link+'/?page=%i' % i,
-                                         debug=('debug' in sys.argv[-1]))
+        for i in range(args.nPages):
+            title, links = extract_infos(args.url+'/?page=%i' % i,
+                                         force_string=args.string,
+                                         debug=args.debug)
             Links += links
             print()
             print(i)
@@ -77,11 +96,8 @@ if __name__=='__main__':
     else:
 
         title, Links = extract_infos(link,
-                                     debug=('debug' in sys.argv[-1]))
+                                     debug=args.debug)
         
-    
     with open('list.txt', 'w') as f:
         for l in Links:
             f.write(l+'\n')
-
-
