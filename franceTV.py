@@ -45,6 +45,14 @@ def extract_infos(link, debug=False):
 
 
     return title, links
+
+def find_season_episodes(url):
+    """ TO BE DONE """
+
+    Links = []
+    title, links = extract_infos(link+'/?page=%i' % i,
+                                 debug=('debug' in sys.argv[-1]))
+    print(links)
     
 
 if __name__=='__main__':
