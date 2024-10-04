@@ -41,13 +41,53 @@ def find_season_episodes(url):
     
 
 if __name__=='__main__':
-    
-    """
-    python arte.py <URL> 
 
-    Need to deal with pages
-    """
-    link = sys.argv[1]
+    parser=argparse.ArgumentParser(description=
+     """
+     Launch the download of Arte Videos
+     """
+    ,formatter_class=argparse.RawTextHelpFormatter)
+
+    parser.add_argument('url', help="")
+
+    parser.add_argument('-f', "--txt_file",
+                        help="filename of files with the ARTE links",
+                        default='arte.txt')
+
+    parser.add_argument('-df', "--dest_folder",
+                        help="destination folder", type=str,
+                        default=os.path.join(os.path.expanduser('~'), 'Videos'))
+
+    parser.add_argument('-q', "--quality",
+                        help="""
+                        quality of the videos in pixels, either:
+                        384x216, 640x360, 768x432, 1280x720
+                        """,
+                        type=str, default='640x360')
+    parser.add_argument('-LQ', '--low_quality', action="store_true")
+
+    parser.add_argument("--languages",\
+                        help="""
+                        default language of the videos
+                        in the order of preferences,
+                        e.g. for a french speaker prefering french only
+                        when original language was french otherwise vostfr,
+                        pick: ['VO-STF', 'VF-STF']""",
+                        nargs='+',
+                        type=str,
+                        default=['VO-STF', 'VOF', 'VOF-STF', 'VF-STF'])
+
+    parser.add_argument('--cleanup', action="store_true",
+                        help="do only the cleanup of residual movie files")
+    parser.add_argument('-ncu', '--no_cleanup', action="store_true",
+                        help="prevent cleanup of residual movie files")
+    parser.add_argument('--debug', action="store_true",
+                        help="prevent downloading")
+
+    args = parser.parse_args()
+
+    if args.low_quality:
+        args.quality = '384x216'
 
     # if 'RC-' in link:
         # title, Links = extract_infos(link+'/?page=%i' % i,
@@ -57,11 +97,14 @@ if __name__=='__main__':
     # else:
 
     title, Links = extract_infos(link,
-                                 debug=('debug' in sys.argv[-1]))
+                                 debug=args.debug)
         
-    
-    with open('list.txt', 'w') as f:
-        for l in Links:
-            f.write(l+'\n')
+
+
+    python -m yt_dlp -a list.txt
+
+    # with open('list.txt', 'w') as f:
+        # for l in Links:
+            # f.write(l+'\n')
 
 
