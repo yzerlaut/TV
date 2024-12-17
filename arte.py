@@ -35,7 +35,7 @@ def find_episodes(url,
         links = extract_links(url+'/?page=%i' % i,
                               debug=False)
         for link in links:
-            if (name[:3] in link) and (link not in Links)\
+            if (name in link) and (link not in Links)\
                     and ('RC-' not in link):
                 Links.append(link)
                 if args.debug:
