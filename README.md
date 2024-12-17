@@ -16,7 +16,7 @@ pip install .
 
 First source the script:
 ```
-source ./bash.sh
+source ./cmd.sh
 ```
 
 Then:

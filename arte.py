@@ -29,12 +29,13 @@ def find_episodes(url,
         print(' ------------------------------------------------------- ')
         print('    looking for links with name: "%s"' % name)
         print(' ------------------------------------------------------- ')
+
     Links = []
-    for i in range(10):
+    for i in range(1):
         links = extract_links(url+'/?page=%i' % i,
                               debug=False)
         for link in links:
-            if (name in link) and (link not in Links)\
+            if (name[:3] in link) and (link not in Links)\
                     and ('RC-' not in link):
                 Links.append(link)
                 if args.debug:
@@ -94,20 +95,14 @@ if __name__=='__main__':
         args.quality = '384x216'
 
     if 'RC-' in args.url:
-        title, Links = find_episodes(args.url,
-                                     debug=args.debug)
+        pass
 
-    else:
-
-        title, Links = extract_infos(args.url,
-                                     debug=args.debug)
-        
+    title, Links = find_episodes(args.url,
+                                 debug=args.debug)
 
 
-    # python -m yt_dlp -a list.txt
-
-    # with open('list.txt', 'w') as f:
-        # for l in Links:
-            # f.write(l+'\n')
+    with open('list.txt', 'w') as f:
+        for l in Links:
+            f.write(l+'\n')
 
 
