@@ -2,15 +2,7 @@ import sys, os
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 
-def extract_infos(link, debug=False):
-
-    title = link.split('/')[-1]
-    if debug:
-        print(title)
-
-    # root_site = link[:31]
-    # if debug:
-        # print(root_site)
+def extract_links(link, debug=False):
 
     req = Request(link)
     html_page = urlopen(req)
@@ -20,27 +12,39 @@ def extract_infos(link, debug=False):
     links = []
     for Link in soup.findAll('a'):
         l = Link.get('href')
+        if ('arte.tv' not in l):
+            l = 'https://www.arte.tv'+l
         if debug:
-            print(l)
-        if (title in l):
-            if ('arte.tv' not in l):
-                l = 'https://www.arte.tv'+l
-            if debug:
-                print('   -> selecting:', l)
-            links.append(l)
+            print('   -> selecting:', l)
+        links.append(l)
 
-    return title, links
+    return links
 
-def find_season_episodes(url):
+def find_episodes(url,
+                  debug=False):
     """ TO BE DONE """
 
+    name = url.split('RC-')[-1].split('/')[1]
+    if debug:
+        print(' ------------------------------------------------------- ')
+        print('    looking for links with name: "%s"' % name)
+        print(' ------------------------------------------------------- ')
     Links = []
-    title, links = extract_infos(link+'/?page=%i' % i,
-                                 debug=('debug' in sys.argv[-1]))
-    print(links)
+    for i in range(10):
+        links = extract_links(url+'/?page=%i' % i,
+                              debug=False)
+        for link in links:
+            if (name in link) and (link not in Links)\
+                    and ('RC-' not in link):
+                Links.append(link)
+                if args.debug:
+                    print('   -> selecting:', link)
+    return name, Links
     
 
 if __name__=='__main__':
+
+    import argparse
 
     parser=argparse.ArgumentParser(description=
      """
@@ -89,19 +93,18 @@ if __name__=='__main__':
     if args.low_quality:
         args.quality = '384x216'
 
-    # if 'RC-' in link:
-        # title, Links = extract_infos(link+'/?page=%i' % i,
-                                     # debug=('debug' in sys.argv[-1]))
-        # print(Links)
+    if 'RC-' in args.url:
+        title, Links = find_episodes(args.url,
+                                     debug=args.debug)
 
-    # else:
+    else:
 
-    title, Links = extract_infos(link,
-                                 debug=args.debug)
+        title, Links = extract_infos(args.url,
+                                     debug=args.debug)
         
 
 
-    python -m yt_dlp -a list.txt
+    # python -m yt_dlp -a list.txt
 
     # with open('list.txt', 'w') as f:
         # for l in Links:

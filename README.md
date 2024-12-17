@@ -16,10 +16,31 @@ pip install .
 
 First source the script:
 ```
-source ~/Downloads/TV/bash.sh
+source ./bash.sh
 ```
 
 Then:
+
+### Single Video Link
+
 ```
-dl your_url.html
+single_dl your_url.html
 ```
+`single_dl` if an alias of `bash.sh`
+
+### Multi Video Link
+
+1) first pre-process the link to extract single videos links
+```
+python ./franceTV.py your_url.html
+# or python ./arte.py your_url.html
+```
+this creates a `list.txt` file.
+
+2) Download the list of files
+```
+list_dl
+```
+
+`list_dl` if an alias of `bash.sh`
+
